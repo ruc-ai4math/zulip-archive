@@ -42,6 +42,7 @@ runs:
         crudini --set zuliprc api email "${{ inputs.zulip_bot_email }}"
         
         cp "${{ github.action_path }}/../default_settings.py" "${{ github.action_path }}/../settings.py"
+        cp "streams.yaml" "${{ github.action_path }}/../streams.yaml"
     - name: Build HTML
       shell: bash
       run: |

@@ -47,10 +47,11 @@ runs:
       run: |
         mkdir -p build/html
         export PROD_ARCHIVE=true
-        export HTML_DIRECTORY=build/html
-        export JSON_DIRECTORY="source-repo/zulip_json"
+        export HTML_DIRECTORY="$(pwd)/build/html"
+        export JSON_DIRECTORY="$(pwd)/source-repo/zulip_json"
         export SITE_URL="${{ steps.pages-setup.outputs.base_url }}"
-        python3 "${{ github.action_path }}/../archive.py" -b
+        cd "${{ github.action_path }}/.."
+        python3 archive.py -b
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
       with:

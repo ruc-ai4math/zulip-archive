@@ -46,6 +46,7 @@ runs:
       shell: bash
       run: |
         mkdir -p build/html
+        export PROD_ARCHIVE=true
         export HTML_DIRECTORY=build/html
         export JSON_DIRECTORY="source-repo/zulip_json"
         export SITE_URL="${{ steps.pages-setup.outputs.base_url }}"

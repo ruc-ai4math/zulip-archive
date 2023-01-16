@@ -1,0 +1,44 @@
+name: 'Zulip Archive'
+description: 'Publish Zulip archive in GitHub pages'
+inputs:
+  zulip_organization_url:
+    description: 'URL of Zulip organization'
+    required: true
+  zulip_bot_email:
+    description: 'Email of the Zulip bot'
+    required: true
+  zulip_bot_key:
+    description: 'API key of the Zulip bot'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Current Repository
+      uses: actions/checkout@v2
+      path: ./source-repo/
+    - name: Setup Python
+      uses: actions/setup-python@v4.4.0
+      with:
+        python-version: "3.10"
+        cache: pip
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip3 install crudini
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Configure crudini
+      run: |
+        crudini --set zuliprc api site "${{ inputs.zulip_organization_url }}"
+        crudini --set zuliprc api key "${{ inputs.zulip_bot_api_key }}"
+        crudini --set zuliprc api email "${{ inputs.zulip_bot_email }}"
+    - name: Build HTML
+      run: |
+        python3 archive.py -b
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: 'build/html'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1

@@ -32,17 +32,21 @@ runs:
         pip install -r "${{ github.action_path }}/../requirements.txt"
         pip3 install crudini
     - name: Setup Pages
+      id: pages-setup
       uses: actions/configure-pages@v2
-    - name: Configure crudini
+    - name: Configure crudini and other settings
       shell: bash
       run: |
         crudini --set zuliprc api site "${{ inputs.zulip_organization_url }}"
         crudini --set zuliprc api key "${{ inputs.zulip_bot_api_key }}"
         crudini --set zuliprc api email "${{ inputs.zulip_bot_email }}"
+        
+        cp default_settings.py settings.py
     - name: Build HTML
       shell: bash
       run: |
         export HTML_DIRECTORY=build/html
+        export SITE_URL="${{ steps.pages-setup.outputs.base_url }}"
         python3 "${{ github.action_path }}/../archive.py" -b
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1

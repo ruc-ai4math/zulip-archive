@@ -43,6 +43,20 @@ runs:
         
         cp "${{ github.action_path }}/../default_settings.py" "${{ github.action_path }}/../settings.py"
         cp "streams.yaml" "${{ github.action_path }}/../streams.yaml"
+        
+        echo "PROD_ARCHIVE=true" >> $GITHUB_ENV
+        echo "HTML_DIRECTORY=$(pwd)/build/html" >> $GITHUB_ENV
+        echo "JSON_DIRECTORY=$(pwd)/source-repo/zulip_json" >> $GITHUB_ENV
+        echo "SITE_URL=${{ steps.pages-setup.outputs.base_url }}" >> $GITHUB_ENV
+    - name: Update JSON
+      shell: bash
+      run: |
+        cd "${{ github.action_path }}/.."
+        python3 archive.py -i
+    - name: show git diff
+      shell: bash
+      run: |
+        git status
     - name: Build HTML
       shell: bash
       run: |

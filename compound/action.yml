@@ -41,7 +41,7 @@ runs:
         crudini --set zuliprc api key "${{ inputs.zulip_bot_api_key }}"
         crudini --set zuliprc api email "${{ inputs.zulip_bot_email }}"
         
-        cp "${{ github.action_path }}/../default_settings.py" settings.py
+        cp "${{ github.action_path }}/../default_settings.py" "${{ github.action_path }}/../settings.py"
     - name: Build HTML
       shell: bash
       run: |

@@ -48,6 +48,7 @@ runs:
         echo "HTML_DIRECTORY=$(pwd)/build/html" >> $GITHUB_ENV
         echo "JSON_DIRECTORY=$(pwd)/source-repo/zulip_json" >> $GITHUB_ENV
         echo "SITE_URL=${{ steps.pages-setup.outputs.base_url }}" >> $GITHUB_ENV
+        echo "HTML_ROOT=" >> $GITHUB_ENV
     - name: Update JSON
       shell: bash
       run: |
@@ -61,10 +62,6 @@ runs:
       shell: bash
       run: |
         mkdir -p build/html
-        export PROD_ARCHIVE=true
-        export HTML_DIRECTORY="$(pwd)/build/html"
-        export JSON_DIRECTORY="$(pwd)/source-repo/zulip_json"
-        export SITE_URL="${{ steps.pages-setup.outputs.base_url }}"
         cd "${{ github.action_path }}/.."
         python3 archive.py -b
     - name: Upload artifact

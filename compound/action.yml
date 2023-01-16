@@ -25,7 +25,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        pip install -r "${{ github.action_path }}/requirements.txt"
+        pip install -r "${{ github.action_path }}/../requirements.txt"
         pip3 install crudini
     - name: Setup Pages
       uses: actions/configure-pages@v2
@@ -39,7 +39,7 @@ runs:
       shell: bash
       run: |
         export HTML_DIRECTORY=build/html
-        python3 "${{ github.action_path }}/archive.py" -b
+        python3 "${{ github.action_path }}/../archive.py" -b
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
       with:

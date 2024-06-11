@@ -40,6 +40,7 @@ runs:
         cp "${{ github.action_path }}/../default_settings.py" "${{ github.action_path }}/../settings.py"
         cp "streams.yaml" "${{ github.action_path }}/../streams.yaml"
 
+        echo "JSON_DIRECTORY=$(pwd)/source-repo/zulip_json" >> $GITHUB_ENV
     - name: Update JSON
       shell: bash
       run: |

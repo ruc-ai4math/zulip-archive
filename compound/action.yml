@@ -34,24 +34,12 @@ runs:
       run: |
         pip install -r "${{ github.action_path }}/../requirements.txt"
         pip3 install crudini
-    - name: Setup Pages
-      id: pages-setup
-      uses: actions/configure-pages@v2
     - name: Configure crudini and other settings
       shell: bash
       run: |
-        crudini --set "${{ github.action_path }}/../zuliprc" api site "${{ inputs.zulip_organization_url }}"
-        crudini --set "${{ github.action_path }}/../zuliprc" api key "${{ inputs.zulip_bot_key }}"
-        crudini --set "${{ github.action_path }}/../zuliprc" api email "${{ inputs.zulip_bot_email }}"
-
         cp "${{ github.action_path }}/../default_settings.py" "${{ github.action_path }}/../settings.py"
         cp "streams.yaml" "${{ github.action_path }}/../streams.yaml"
 
-        echo "PROD_ARCHIVE=true" >> $GITHUB_ENV
-        echo "HTML_DIRECTORY=$(pwd)/build/jekyll" >> $GITHUB_ENV
-        echo "JSON_DIRECTORY=$(pwd)/source-repo/zulip_json" >> $GITHUB_ENV
-        echo "SITE_URL=${{ steps.pages-setup.outputs.base_url }}" >> $GITHUB_ENV
-        echo "HTML_ROOT=" >> $GITHUB_ENV
     - name: Update JSON
       shell: bash
       run: |

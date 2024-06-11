@@ -37,6 +37,10 @@ runs:
     - name: Configure crudini and other settings
       shell: bash
       run: |
+        crudini --set "${{ github.action_path }}/../zuliprc" api site "${{ inputs.zulip_organization_url }}"
+        crudini --set "${{ github.action_path }}/../zuliprc" api key "${{ inputs.zulip_bot_key }}"
+        crudini --set "${{ github.action_path }}/../zuliprc" api email "${{ inputs.zulip_bot_email }}"
+
         cp "${{ github.action_path }}/../default_settings.py" "${{ github.action_path }}/../settings.py"
         cp "streams.yaml" "${{ github.action_path }}/../streams.yaml"
 

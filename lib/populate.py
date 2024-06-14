@@ -42,6 +42,7 @@ About the data:
 
 import json
 import time
+from tqdm import tqdm
 from datetime import datetime
 from pathlib import Path
 from .common import (
@@ -134,7 +135,8 @@ def populate_all(
 
         topic_data = {}
 
-        for t in topics:
+        failed_topics = []
+        for t in tqdm(topics):
             topic_name = t["name"]
 
             request = {
@@ -145,9 +147,36 @@ def populate_all(
                 "client_gravatar": True,
                 "apply_markdown": True,
             }
+            try:
+                messages = request_all(client, request)
+            except:
+                failed_topics.append(t)
+                continue
+            topic_count = len(messages)
+            last_message = messages[-1]
+            latest_date = last_message["timestamp"]
 
-            messages = request_all(client, request)
+            topic_data[topic_name] = dict(size=topic_count, latest_date=latest_date)
 
+            latest_id = max(latest_id, last_message["id"])
+
+            dump_topic_messages(json_root, s, topic_name, messages)
+        print("Start for failed topics")
+        for t in tqdm(failed_topics):
+            topic_name = t["name"]
+
+            request = {
+                "narrow": [
+                    {"operator": "stream", "operand": stream_name},
+                    {"operator": "topic", "operand": topic_name},
+                ],
+                "client_gravatar": True,
+                "apply_markdown": True,
+            }
+            try:
+                messages = request_all(client, request)
+            except:
+                continue
             topic_count = len(messages)
             last_message = messages[-1]
             latest_date = last_message["timestamp"]
@@ -166,8 +195,8 @@ def populate_all(
 
         streams_data[stream_name] = stream_data
 
-    js = dict(streams=streams_data, time=time.time())
-    dump_stream_index(json_root, js)
+        js = dict(streams=streams_data, time=time.time())
+        dump_stream_index(json_root, js)
 
 
 # Retrieves only new messages from Zulip, based on timestamps from the last update.
